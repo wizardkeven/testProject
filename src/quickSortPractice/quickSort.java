@@ -17,14 +17,12 @@ public class quickSort {
 			Random random = new Random();
 			//Choosing a pivot randomly
 			int pivot = start+random.nextInt(end - start);
-
+			swap(A, pivot, end);
+			pivot = end;
 			int index = start;
 			
-			for(; start <= end; start++){
-				if(A[start] < A[pivot]){
-					if(A[index] == A[pivot]){
-						pivot = start;
-					}
+			for(; start < end; start++){
+				if(A[start] <= A[pivot]){
 					swap(A,index, start);
 					index++;
 				}

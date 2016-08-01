@@ -15,15 +15,15 @@ import java.util.Random;
  */
 public class quickSortPractice {
 	public static void main(String[] args){
-//		int[] B = new int[20];
-		int[] B = {7,2,1,6,8,5,3,4};
-//		int i = 0;
-//		Random res = new Random();
-//		
-//		while(i<20){
-//			B[i] = res.nextInt(100);
-//			i++;
-//		}
+		int[] B = new int[20];
+//		int[] B = {7,2,1,6,8,5,3,4};
+		int i = 0;
+		Random res = new Random();
+		
+		while(i<20){
+			B[i] = res.nextInt(100);
+			i++;
+		}
 		
 		quickSort exam = new quickSort();
 		exam.quickSortMethod(B, 0, B.length-1);
