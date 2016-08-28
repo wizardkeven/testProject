@@ -2,33 +2,49 @@ package rakuten;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Random;
 
 public class Solution {
-    public double solution(int x1, int y1, int r1, int x2, int y2, int r2) {
-    	DecimalFormat dFormat = new DecimalFormat("#.####");
-    	dFormat.setRoundingMode(RoundingMode.DOWN);
-    	double dis_center = Double.parseDouble(dFormat.format(Math.sqrt(Math.pow((x1-x2), 2)+Math.pow((y1-y2), 2))));
-    	int R,r;
-    	if (r1>r2) {
-			R=r1;
-			r= r2;
-		}else {
-			R=r2;
-			r=r1;
-		}
-    	if ((dis_center>=r1+r2)|| dis_center<R-r) {
-			return 0.0;
-		}
-    	
+	public void quickSort(int[] A, int start, int end) {
 
+		// Condition to return
+		if (start >= end) {
+			return;
+		}
 
-    	double area1 = r*r*Math.acos((dis_center*dis_center+r*r -R*R)/(2*dis_center*r));
-    	double area2 = R*R*Math.acos((dis_center*dis_center+R*R-r*r)/(2*dis_center*R));
-    	double area3 = 0.5*Math.sqrt((-dis_center+r+R)*(dis_center+r-R)*(dis_center-r+R)*(dis_center+r+R));
-    	double intersection = area1+area2-area3;
-    	
-    	String ss = dFormat.format(intersection);
-		return Double.parseDouble(ss);
-    }
+		int pivot = partition(A, start, end);
+		quickSort(A, start, pivot);
+		quickSort(A, pivot + 1, end);
+	}
+
+	// Choose a pivot from A
+	// And Partition A to left smaller than pivot part and
+	// right larger or equal to pivot part
+	public int partition(int[] A, int start, int end) {
+		int pivot;
+		Random rm = new Random();
+		pivot = start + rm.nextInt(end - start);
+		// Switch the pivot to the end of the array to avoid unnecessary process
+		swap(A, pivot, end);
+		pivot = end;
+		int i = start;
+		int index = start;
+		while (i < end) {
+			if (A[i] < A[pivot]) {
+				swap(A, index, i);
+				index++;
+			}
+			i++;
+		}
+
+		swap(A, index, pivot);
+		pivot = index;
+		return pivot;
+	}
+
+	public void swap(int[] A, int a, int b) {
+		int temp = A[a];
+		A[a] = A[b];
+		A[b] = temp;
+	}
 }
-
