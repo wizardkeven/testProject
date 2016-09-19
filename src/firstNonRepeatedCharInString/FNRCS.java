@@ -1,8 +1,16 @@
 package firstNonRepeatedCharInString;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public class FNRCS {
 
@@ -51,4 +59,20 @@ public class FNRCS {
 		
 		return  "";
 	}
+//	public static String findCharBySet(String s){
+//		if(s.length()<=0) return null;
+//		Set<Character> filter = new LinkedHashSet<Character>();
+//		LinkedList<Character> indexA = new LinkedList<>();
+//		int origSize;
+//		for(int i=0;i<s.length();i++){
+//			origSize = filter.size();
+//			filter.add(s.charAt(i));
+//			if(origSize < filter.size())
+//				indexA.add(s.charAt(i));
+//			else {
+//				indexA.remove(s.charAt(i));
+//			}
+//		}
+//		
+//	}
 }
