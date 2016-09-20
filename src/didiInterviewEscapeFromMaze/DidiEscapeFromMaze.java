@@ -1,5 +1,7 @@
 package didiInterviewEscapeFromMaze;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
@@ -52,56 +54,66 @@ import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 public class DidiEscapeFromMaze {
 
 	public static void main(String[] args) {
-		int m = 4, n = 4;
-		int[][] maze = { { 1, 0, 0, 1 }, { 1, 1, 0, 1 }, { 0, 1, 1, 1 }, { 0, 0, 1, 1 } };
-		int P = 10;
+		int m = 7, n = 8;
+		int[][] maze = { { 1, 0, 0, 0, 0, 0, 1, 1 }, { 1, 1, 0, 1, 1, 0, 1, 0 }, { 1, 1, 1, 1, 1, 0, 1, 1 },
+				{ 1, 0, 1, 1, 1, 1, 0, 1 }, { 1, 0, 1, 0, 0, 1, 1, 1 }, { 1, 1, 1, 0, 0, 0, 0, 0 },
+				{ 0, 0, 0, 0, 0, 0, 0, 0 } };
+		int P = 21;
 		FindPathForFrog(maze, P);
 
 	}
 
+	/**
+	 * 寻找可行最优解，如果没有，打印错误
+	 * @param maze 地下迷宫二维矩阵
+	 * @param P 体力初始值
+	 */
 	public static void FindPathForFrog(int[][] maze, int P) {
-		Queue<Integer[]> route = new LinkedList<Integer[]>();
-		if(findPath(maze, P, 0, 0, route, P)<0)
+		//存储最优路径，元素为x,y节点位置，只能包含两个元素，其他情况为异常
+		ArrayDeque<Integer[]> route = new ArrayDeque<Integer[]>();
+		if (findPath(maze, P, 0, 0, route, P) < 0)
 			System.out.println("Can not escape!");
 	}
 
-	private static int findPath(int[][] maze, int restEnergy, int n, int m, Queue<Integer[]> route, int oe) {
+	private static int findPath(int[][] maze, int restEnergy, int n, int m, Deque<Integer[]> route, int oe) {
 		// when out of range or frog cannot get through from this place, then
 		// return
 		if (n < 0 || m < 0 || n > maze.length - 1 || m > maze[0].length - 1 || maze[n][m] == 0 || restEnergy < 0)
-			return -oe;
+			return Integer.MIN_VALUE;
 
 		// Reach exit with negative energy
 		if (n == 0 && m == maze[0].length - 1 && restEnergy < 0) {
-			return -oe;
+			return Integer.MIN_VALUE;
 		}
-
 		// Reach to exit with non-negative energy
 		if (n == 0 && m == maze[0].length - 1 && restEnergy >= 0) {
-			route.add(new Integer[] { 0, 0 });
+			route.add(new Integer[] { n, m });
 			for (Integer[] element : route) {
 				if (element.length != 2)
-					System.err.println("Error ocurred!");
+					System.err.println("Error ocurred!");//某种莫名其妙的小状况
+				//最优解到达出口，打印路径
 				System.out.println("[" + element[0] + "," + element[1] + "]");
 			}
 			return restEnergy;
 		}
-//		System.out.println("n: " + n + " m: " + m + " rest: " + restEnergy);
-		if (maze[n][m] == 1)
-			route.add(new Integer[] { n, m });
-		int fromUp = findPath(maze, restEnergy - 3, n + 1, m, route, oe);
-		int fromright = findPath(maze, restEnergy - 1, n, m + 1, route, oe);
-		int fromdown = findPath(maze, restEnergy, n - 1, m, route, oe);
+		// System.out.println("n: " + n + " m: " + m + " rest: " + restEnergy);
+		//下一步最优解
+		int maxP = 0;
+		//添加当下可行节点
+		route.add(new Integer[] { n, m });
+		maze[n][m] = 0;//关闭走过的通道，避免形成环
+		int goRight = findPath(maze, restEnergy - 1, n, m + 1, route, oe);
+		int goLeft = findPath(maze, restEnergy - 1, n, m - 1, route, oe);
+		int goUp = findPath(maze, restEnergy - 3, n + 1, m, route, oe);
+		int goDown = findPath(maze, restEnergy, n - 1, m, route, oe);
 
-		int mam = Math.max(fromUp, Math.max(fromright, fromdown));
+		maxP = Math.max(goDown, Math.max(goLeft, Math.max(goRight, goUp)));
+		
+		// 减去冗余枝叶，避免在当下是可行解，但是下一步是非可行解的冗余节点
+		if (maxP < 0)
+			route.removeLast();
 
-		if (mam == fromUp)
-			route.add(new Integer[] { n + 1, m });
-		else if (mam == fromright)
-			route.add(new Integer[] { n, m + 1 });
-		else if (mam == fromdown)
-			route.add(new Integer[] { n - 1, m });
-		return mam;
+		return maxP;
 	}
 
 }
